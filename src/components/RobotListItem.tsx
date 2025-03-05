@@ -13,7 +13,8 @@ interface Props {
 const RobotListItem = ({ keyName, name, url, onDelete, onEdit }: Props) => {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   
-  // Handle delete button click
+ 
+  // Added confirmation step and improved error handling
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation() // Prevent parent click events
     
@@ -44,7 +45,7 @@ const RobotListItem = ({ keyName, name, url, onDelete, onEdit }: Props) => {
     setIsConfirmingDelete(false)
   }
   
-  // Handle edit button click
+  // preventing event propogation
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation()
     if (onEdit) {
