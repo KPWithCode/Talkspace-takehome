@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useContext } from 'react'
 import { AvatarContext } from '../../context'
-import { COLOR_PALETTE } from '../../Services'
+import { COLOR_PALETTE } from '../../config/avatarOptions'
 import '../../styles/UI/colorPicker.css'
 
 interface Props {

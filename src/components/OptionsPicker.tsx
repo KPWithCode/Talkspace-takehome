@@ -1,7 +1,7 @@
 import '../styles/optionsPicker.css'
 import TabBar from './UI/TabBar'
 import { TabData, OverrideOption } from '../Types'
-import { customizationOptions } from '../Services'
+import { customizationOptions } from '../config/avatarOptions'
 import { useMemo, useState } from 'react'
 import { buildURL } from '../Services'
 import { useContext } from 'react'
@@ -63,7 +63,7 @@ const OptionsPicker = () => {
         handleOnClick={handleTabClick}
       />
       
-      <div className="options_examples" role="listbox" aria-label={`${activeTab} options`}>
+      <div className="options_examples" role="listbox" aria-label={`${activeTab}-options`}>
         {displayOptions.map((opt, i) => (
           <div
             key={`opt_${activeTab}_${i}`}
