@@ -1,4 +1,4 @@
-import { AvatarOptions, OverrideOption, CustomizationOptions } from './Types'
+import { AvatarOptions, OverrideOption, AvatarList, AvatarListItem } from './Types'
 
 
 export const buildURL = (avatarOptions: AvatarOptions | undefined, overrideOption?: OverrideOption) => {
@@ -65,9 +65,9 @@ export const deleteAvatarFromStorage = (key: string) => {
 }
 
 // Only retrieves items that belong to our application (with our prefix)
-export const getAllAvatarsFromStorage = () => {
+export const getAllAvatarsFromStorage = ():AvatarList => {
   try {
-    const avatars = []
+    const avatars:AvatarList = []
     const prefix = STORAGE_PREFIX
     
     for (let i = 0; i < window.localStorage.length; i++) {
@@ -75,7 +75,7 @@ export const getAllAvatarsFromStorage = () => {
       if (key && key.startsWith(prefix)) {
         const rawData = window.localStorage.getItem(key)
         if (rawData) {
-          const avatar = JSON.parse(rawData)
+          const avatar = JSON.parse(rawData) as AvatarListItem
           avatar.key = key.replace(prefix, '') // Remove prefix before returning. Helps to reduce coupling
           avatars.push(avatar)
         }
