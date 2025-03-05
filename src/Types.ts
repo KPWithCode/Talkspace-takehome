@@ -1,3 +1,4 @@
+// Added index signature to avatar options for dynamic property access
 export type AvatarOptions = {
   name: string,
   backgroundColor: string,
@@ -8,7 +9,8 @@ export type AvatarOptions = {
   sides: string,
   texture: string,
   top: string,
-} | undefined 
+  [key: string]: string;
+}
 
 export type AvatarURL = string | undefined
 
