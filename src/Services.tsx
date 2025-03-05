@@ -1,6 +1,5 @@
 import { AvatarOptions, OverrideOption, CustomizationOptions } from './Types'
 
-// construct URLs for avatars
 export const buildURL = (avatarOptions: AvatarOptions | undefined, overrideOption?: OverrideOption) => {
   if (!avatarOptions) return "https://api.dicebear.com/9.x/bottts/svg"
   const _O = { ...avatarOptions }
@@ -19,10 +18,66 @@ export const buildURL = (avatarOptions: AvatarOptions | undefined, overrideOptio
   return baseURL + queryString 
 }
 
-// generate unique-ish ID
-export const generateKey = (name: string) => {
+
+export const STORAGE_PREFIX = 'robot_avatar_'
+export const getStorageKey = (key: string) => {
+  return `${STORAGE_PREFIX}${key}`
+}
+
+const generateKey = (name: string) => {
   return `${name}${Math.floor(Math.random()*1000000)}`
 }
+
+export const saveAvatarToStorage = (name: string, url: string) => {
+  if (!name) return false
+  
+  try {
+    const key = generateKey(name)
+    window.localStorage.setItem(
+      getStorageKey(key), 
+      JSON.stringify({URL: url, name: name})
+    )
+    return key
+  } catch(error) {
+    console.error("Error saving avatar:", error)
+    return false
+  }
+}
+
+export const deleteAvatarFromStorage = (key: string) => {
+  try {
+    window.localStorage.removeItem(getStorageKey(key))
+    return true
+  } catch(error) {
+    console.error("Error deleting avatar:", error)
+    return false
+  }
+}
+
+export const getAllAvatarsFromStorage = () => {
+  try {
+    const avatars = []
+    const prefix = STORAGE_PREFIX
+    
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i)
+      if (key && key.startsWith(prefix)) {
+        const rawData = window.localStorage.getItem(key)
+        if (rawData) {
+          const avatar = JSON.parse(rawData)
+          avatar.key = key.replace(prefix, '') // Remove prefix for internal use
+          avatars.push(avatar)
+        }
+      }
+    }
+    
+    return avatars
+  } catch(error) {
+    console.error("Error retrieving avatars:", error)
+    return []
+  }
+}
+
 
 export const defaultRobot: AvatarOptions = {
   name: "",
