@@ -1,25 +1,33 @@
 import { AvatarOptions, OverrideOption, CustomizationOptions } from './Types'
 
+
 export const buildURL = (avatarOptions: AvatarOptions | undefined, overrideOption?: OverrideOption) => {
   if (!avatarOptions) return "https://api.dicebear.com/9.x/bottts/svg"
+
   const _O = { ...avatarOptions }
+  
   if (overrideOption) _O[overrideOption.name] = overrideOption.value
-  const baseURL = "https://api.dicebear.com/9.x/bottts/svg?"
-  const queryParams = [
-    `baseColor=${_O.baseColor}`, 
-    `backgroundColor=${_O.backgroundColor}`,
-    `eyes=${_O.eyes}`,
-    `face=${_O.face}`,
-    `mouth=${_O.mouth}`,
-    `sides=${_O.sides}`,
-    `texture=${_O.texture}`,
-    `top=${_O.top}`,]
-  const queryString= queryParams.join("&")
-  return baseURL + queryString 
+  
+  const baseURL = "https://api.dicebear.com/9.x/bottts/svg"
+  const params = new URLSearchParams()
+  
+  if (_O.baseColor) params.append('baseColor', _O.baseColor)
+  if (_O.backgroundColor) params.append('backgroundColor', _O.backgroundColor)
+  if (_O.eyes) params.append('eyes', _O.eyes)
+  if (_O.face) params.append('face', _O.face)
+  if (_O.mouth) params.append('mouth', _O.mouth)
+  if (_O.sides) params.append('sides', _O.sides)
+  if (_O.texture) params.append('texture', _O.texture)
+  if (_O.top) params.append('top', _O.top)
+  
+  const queryString = params.toString()
+  return queryString ? `${baseURL}?${queryString}` : baseURL
 }
 
-
+// namespace to isolates app and prevent key collision
 export const STORAGE_PREFIX = 'robot_avatar_'
+
+// consistency in key naming across the application
 export const getStorageKey = (key: string) => {
   return `${STORAGE_PREFIX}${key}`
 }
@@ -28,6 +36,7 @@ const generateKey = (name: string) => {
   return `${name}${Math.floor(Math.random()*1000000)}`
 }
 
+// consistent interface for storing avatars
 export const saveAvatarToStorage = (name: string, url: string) => {
   if (!name) return false
   
@@ -44,6 +53,7 @@ export const saveAvatarToStorage = (name: string, url: string) => {
   }
 }
 
+// Centralizes deletion logic in a dedicated function
 export const deleteAvatarFromStorage = (key: string) => {
   try {
     window.localStorage.removeItem(getStorageKey(key))
@@ -54,6 +64,7 @@ export const deleteAvatarFromStorage = (key: string) => {
   }
 }
 
+// Only retrieves items that belong to our application (with our prefix)
 export const getAllAvatarsFromStorage = () => {
   try {
     const avatars = []
@@ -65,7 +76,7 @@ export const getAllAvatarsFromStorage = () => {
         const rawData = window.localStorage.getItem(key)
         if (rawData) {
           const avatar = JSON.parse(rawData)
-          avatar.key = key.replace(prefix, '') // Remove prefix for internal use
+          avatar.key = key.replace(prefix, '') // Remove prefix before returning. Helps to reduce coupling
           avatars.push(avatar)
         }
       }
